@@ -3,12 +3,16 @@ package cz.zcu.fav.kiv.antipatterndetectionapp.controller;
 
 import cz.zcu.fav.kiv.antipatterndetectionapp.detecting.AntiPatternManager;
 import cz.zcu.fav.kiv.antipatterndetectionapp.model.AntiPattern;
+import cz.zcu.fav.kiv.antipatterndetectionapp.model.Project;
 import cz.zcu.fav.kiv.antipatterndetectionapp.model.Query;
 import cz.zcu.fav.kiv.antipatterndetectionapp.model.QueryResult;
 import cz.zcu.fav.kiv.antipatterndetectionapp.service.AntiPatternService;
 import cz.zcu.fav.kiv.antipatterndetectionapp.service.ConfigurationService;
 import cz.zcu.fav.kiv.antipatterndetectionapp.service.ProjectService;
 import cz.zcu.fav.kiv.antipatterndetectionapp.service.UserAccountService;
+import cz.zcu.fav.kiv.antipatterndetectionapp.v2.model.ProjectDto;
+import cz.zcu.fav.kiv.antipatterndetectionapp.v2.utils.converters.ClassToDto;
+import cz.zcu.fav.kiv.antipatterndetectionapp.v2.utils.converters.ProjectToDto;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Safelist;
 import org.slf4j.Logger;
@@ -55,9 +59,11 @@ public class AppController {
     @Autowired
     private ConfigurationService configurationService;
 
+    private final ClassToDto<Project, ProjectDto> classToDto = new ProjectToDto();
+
     @GetMapping("/")
     public String mainPage(Model model) {
-        model.addAttribute("query", new Query(projectService.getAllProjects(), antiPatternService.antiPatternsToModel(antiPatternService.getAllAntiPatterns())));
+        model.addAttribute("query", new Query(classToDto.convert(projectService.getAllProjects()), antiPatternService.antiPatternsToModel(antiPatternService.getAllAntiPatterns())));
         return "main-page";
     }
 
@@ -71,7 +77,7 @@ public class AppController {
      */
     @GetMapping("/detect")
     public String index(Model model) {
-        model.addAttribute("query", new Query(projectService.getAllProjects(), antiPatternService.antiPatternsToModel(antiPatternService.getAllAntiPatterns())));
+        model.addAttribute("query", new Query(classToDto.convert(projectService.getAllProjects()), antiPatternService.antiPatternsToModel(antiPatternService.getAllAntiPatterns())));
         LOGGER.info("@GetMapping(\"/\") - Accessing main page");
         return "index";
     }
@@ -85,7 +91,7 @@ public class AppController {
      */
     @GetMapping("/projects/{id}")
     public String getProjectById(@PathVariable Long id, Model model) {
-        model.addAttribute("query", new Query(projectService.getAllProjects(), antiPatternService.antiPatternsToModel(antiPatternService.getAllAntiPatterns())));
+        model.addAttribute("query", new Query(classToDto.convert(projectService.getAllProjects()), antiPatternService.antiPatternsToModel(antiPatternService.getAllAntiPatterns())));
         model.addAttribute("project", projectService.getProjectById(id));
         LOGGER.info("@GetMapping(\"projects/" + id + ")");
         return "project";
@@ -97,7 +103,7 @@ public class AppController {
      */
     @GetMapping("/anti-patterns")
     public @ResponseBody List<AntiPattern> getAllAntiPatterns(Model model) {
-        model.addAttribute("query", new Query(projectService.getAllProjects(), antiPatternService.antiPatternsToModel(antiPatternService.getAllAntiPatterns())));
+        model.addAttribute("query", new Query(classToDto.convert(projectService.getAllProjects()), antiPatternService.antiPatternsToModel(antiPatternService.getAllAntiPatterns())));
         LOGGER.info("GetMapping(\"/anti-patterns\") and obtaining all APs.");
         return antiPatternService.antiPatternsToModel(antiPatternService.getAllAntiPatterns());
     }
@@ -112,7 +118,7 @@ public class AppController {
     @GetMapping("/anti-patterns/{id}")
     public String getAntiPatternById(@PathVariable Long id, Model model, HttpSession session) {
         String currentConfigurationName = configurationGetFromSession(session);
-        model.addAttribute("query", new Query(projectService.getAllProjects(), antiPatternService.antiPatternsToModel(antiPatternService.getAllAntiPatterns())));
+        model.addAttribute("query", new Query(classToDto.convert(projectService.getAllProjects()), antiPatternService.antiPatternsToModel(antiPatternService.getAllAntiPatterns())));
         model.addAttribute("antiPattern", antiPatternService.getAntiPatternById(id).getAntiPatternModel());
         model.addAttribute("description", antiPatternService.getDescriptionFromCatalogue(id));
         model.addAttribute("operationalizationText", antiPatternService.getOperationalizationText(antiPatternService.getAntiPatternById(id).getAntiPatternModel().getName()));
@@ -140,14 +146,14 @@ public class AppController {
 
         if (currentConfigurationName == null) {
             model.addAttribute("errorMessage", "No configuration was found!");
-            model.addAttribute("query", new Query(projectService.getAllProjects(), antiPatternService.antiPatternsToModel(antiPatternService.getAllAntiPatterns())));
+            model.addAttribute("query", new Query(classToDto.convert(projectService.getAllProjects()), antiPatternService.antiPatternsToModel(antiPatternService.getAllAntiPatterns())));
             return "index";
         }
 
         if (selectedProjects == null) {
             model.addAttribute("errorMessage", "No project selected." +
                     " Select at least one project.");
-            model.addAttribute("query", new Query(projectService.getAllProjects(), antiPatternService.antiPatternsToModel(antiPatternService.getAllAntiPatterns())));
+            model.addAttribute("query", new Query(classToDto.convert(projectService.getAllProjects()), antiPatternService.antiPatternsToModel(antiPatternService.getAllAntiPatterns())));
             LOGGER.warn("@PostMapping(\"/analyze\") - Processing requirements for analyzing selected projects and AP with an error. " +
                     "selectedProjects are null!");
             return "index";
@@ -156,7 +162,7 @@ public class AppController {
         if (selectedAntiPatterns == null) {
             model.addAttribute("errorMessage", "No anti-pattern selected." +
                     " Select at least one anti-pattern.");
-            model.addAttribute("query", new Query(projectService.getAllProjects(), antiPatternService.antiPatternsToModel(antiPatternService.getAllAntiPatterns())));
+            model.addAttribute("query", new Query(classToDto.convert(projectService.getAllProjects()), antiPatternService.antiPatternsToModel(antiPatternService.getAllAntiPatterns())));
             LOGGER.warn("@PostMapping(\"/analyze\") - Processing requirements for analyzing selected projects and AP with an error. " +
                     "selectedAntiPatterns are null!");
             return "index";
@@ -170,7 +176,7 @@ public class AppController {
         antiPatternService.saveResults(results);
         antiPatternService.setConfigurationChanged(false);
 
-        model.addAttribute("query", new Query(projectService.getAllProjects(), antiPatternService.antiPatternsToModel(antiPatternService.getAllAntiPatterns())));
+        model.addAttribute("query", new Query(classToDto.convert(projectService.getAllProjects()), antiPatternService.antiPatternsToModel(antiPatternService.getAllAntiPatterns())));
         model.addAttribute("queryResults", results);
         model.addAttribute("recalculationTime", DateTimeFormatter.ofPattern("HH:mm:ss").format(LocalTime.now()));
 
@@ -192,7 +198,7 @@ public class AppController {
         }
         antiPatternService.setConfigurationChanged(false);
 
-        model.addAttribute("query", new Query(projectService.getAllProjects(), antiPatternService.antiPatternsToModel(antiPatternService.getAllAntiPatterns())));
+        model.addAttribute("query", new Query(classToDto.convert(projectService.getAllProjects()), antiPatternService.antiPatternsToModel(antiPatternService.getAllAntiPatterns())));
         model.addAttribute("queryResults", antiPatternService.getResults());
         model.addAttribute("recalculationTime", DateTimeFormatter.ofPattern("HH:mm:ss").format(LocalTime.now()));
 
@@ -207,7 +213,7 @@ public class AppController {
      */
     @GetMapping("/about")
     public String about(Model model) {
-        model.addAttribute("query", new Query(projectService.getAllProjects(), antiPatternService.antiPatternsToModel(antiPatternService.getAllAntiPatterns())));
+        model.addAttribute("query", new Query(classToDto.convert(projectService.getAllProjects()), antiPatternService.antiPatternsToModel(antiPatternService.getAllAntiPatterns())));
         LOGGER.info("@GetMapping(\"/about\") - Accessing about page");
         return "about";
     }
@@ -220,7 +226,7 @@ public class AppController {
      */
     @GetMapping("/configuration")
     public String configuration(Model model, HttpSession session) {
-        model.addAttribute("query", new Query(projectService.getAllProjects(), antiPatternService.antiPatternsToModel(antiPatternService.getAllAntiPatterns())));
+        model.addAttribute("query", new Query(classToDto.convert(projectService.getAllProjects()), antiPatternService.antiPatternsToModel(antiPatternService.getAllAntiPatterns())));
         model.addAttribute("antiPatterns", antiPatternService.antiPatternsToModel(antiPatternService.getAllAntiPatterns()));
 
         String currentConfigurationName = configurationGetFromSession(session);
@@ -245,7 +251,7 @@ public class AppController {
 
         String currentConfigurationName = configurationGetFromSession(session);
 
-        Query query = new Query(projectService.getAllProjects(), antiPatternService.antiPatternsToModel(antiPatternService.getAllAntiPatterns()));
+        Query query = new Query(classToDto.convert(projectService.getAllProjects()), antiPatternService.antiPatternsToModel(antiPatternService.getAllAntiPatterns()));
 
         List<String> wrongParameters = configurationService.saveNewConfiguration(query.getAntiPatterns(), currentConfigurationName, antiPatternNames, thresholdNames, thresholdValues, true);
 
@@ -283,7 +289,7 @@ public class AppController {
                                     @RequestParam(value = "configuration-save-as-input") String newConfigName,
                                     HttpSession session, RedirectAttributes redirectAttributes) {
 
-        Query query = new Query(projectService.getAllProjects(), antiPatternService.antiPatternsToModel(antiPatternService.getAllAntiPatterns()));
+        Query query = new Query(classToDto.convert(projectService.getAllProjects()), antiPatternService.antiPatternsToModel(antiPatternService.getAllAntiPatterns()));
         String currentConfigurationName = configurationGetFromSession(session);
 
         List<String> allConfigurationNames = configurationService.getAllConfigurationNames();
@@ -439,7 +445,7 @@ public class AppController {
      */
     @GetMapping("/login")
     public String login(Model model) {
-        model.addAttribute("query", new Query(projectService.getAllProjects(), antiPatternService.antiPatternsToModel(antiPatternService.getAllAntiPatterns())));
+        model.addAttribute("query", new Query(classToDto.convert(projectService.getAllProjects()), antiPatternService.antiPatternsToModel(antiPatternService.getAllAntiPatterns())));
         return "login";
     }
 

@@ -11,7 +11,7 @@ public class ApplicationProperties {
     private Environment environment;
 
     public String getDataSourceUrl () {
-        return environment.getProperty("spring.datasource.url");
+        return environment.getProperty("spring.datasource.jdbc-url");
     }
 
     public String getDataSourceUsername() {

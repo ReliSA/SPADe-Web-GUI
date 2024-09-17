@@ -8,6 +8,7 @@ import cz.zcu.fav.kiv.antipatterndetectionapp.model.QueryResultItem;
 import cz.zcu.fav.kiv.antipatterndetectionapp.service.AntiPatternService;
 import cz.zcu.fav.kiv.antipatterndetectionapp.service.ProjectService;
 import cz.zcu.fav.kiv.antipatterndetectionapp.utils.Utils;
+import cz.zcu.fav.kiv.antipatterndetectionapp.v2.utils.converters.ProjectToDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,6 +27,12 @@ public class AntiPatternManagerImpl implements AntiPatternManager {
 
     @Override
     public List<QueryResult> analyze(String[] selectedProjects, String[] selectedAntiPatterns, Map<String, Map<String, String>> configuration) {
+        //not null is assured via controllers and dtos
+        //but the array might be empty
+        //the analysis should not run
+        if(selectedProjects.length == 0 || selectedAntiPatterns.length == 0){
+            return new ArrayList<>();
+        }
 
         return this.analyze(projectService.getAllProjectsForGivenIds(Utils.arrayOfStringsToArrayOfLongs(selectedProjects)),
                 antiPatternService.getAllAntiPatternsForGivenIds(Utils.arrayOfStringsToArrayOfLongs(selectedAntiPatterns)), configuration);
@@ -45,7 +52,8 @@ public class AntiPatternManagerImpl implements AntiPatternManager {
 
         for (Project project : projects) {
             QueryResult queryResult = new QueryResult();
-            queryResult.setProject(project);
+            ProjectToDto projectToDto = new ProjectToDto();
+            queryResult.setProject(projectToDto.convert(project));
             List<QueryResultItem> queryResultItems = new ArrayList<>();
 
             for (AntiPatternDetector antiPattern : antiPatternDetectors) {

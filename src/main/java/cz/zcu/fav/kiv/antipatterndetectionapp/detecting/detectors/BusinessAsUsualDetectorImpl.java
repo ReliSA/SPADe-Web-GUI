@@ -4,7 +4,6 @@ import cz.zcu.fav.kiv.antipatterndetectionapp.detecting.DatabaseConnection;
 import cz.zcu.fav.kiv.antipatterndetectionapp.model.*;
 import cz.zcu.fav.kiv.antipatterndetectionapp.model.types.Percentage;
 import cz.zcu.fav.kiv.antipatterndetectionapp.utils.Utils;
-import cz.zcu.fav.kiv.antipatterndetectionapp.service.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

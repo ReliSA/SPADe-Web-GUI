@@ -2,11 +2,7 @@ package cz.zcu.fav.kiv.antipatterndetectionapp.detecting.detectors;
 
 import cz.zcu.fav.kiv.antipatterndetectionapp.detecting.DatabaseConnection;
 import cz.zcu.fav.kiv.antipatterndetectionapp.model.*;
-import cz.zcu.fav.kiv.antipatterndetectionapp.model.types.Percentage;
-import cz.zcu.fav.kiv.antipatterndetectionapp.model.types.PositiveFloat;
 import cz.zcu.fav.kiv.antipatterndetectionapp.model.types.PositiveInteger;
-import cz.zcu.fav.kiv.antipatterndetectionapp.service.AntiPatternService;
-import cz.zcu.fav.kiv.antipatterndetectionapp.service.AntiPatternServiceImpl;
 import cz.zcu.fav.kiv.antipatterndetectionapp.utils.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

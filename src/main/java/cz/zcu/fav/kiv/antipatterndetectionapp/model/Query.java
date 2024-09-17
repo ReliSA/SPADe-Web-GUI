@@ -1,24 +1,26 @@
 package cz.zcu.fav.kiv.antipatterndetectionapp.model;
 
+import cz.zcu.fav.kiv.antipatterndetectionapp.v2.model.ProjectDto;
+
 import java.util.List;
 
 /**
  * Model class for query.
  */
 public class Query {
-    private List<Project> projects;
+    private List<ProjectDto> projects;
     private List<AntiPattern> antiPatterns;
 
-    public Query(List<Project> projects, List<AntiPattern> antiPatterns) {
+    public Query(List<ProjectDto> projects, List<AntiPattern> antiPatterns) {
         this.projects = projects;
         this.antiPatterns = antiPatterns;
     }
 
-    public List<Project> getProjects() {
+    public List<ProjectDto> getProjects() {
         return projects;
     }
 
-    public void setProjects(List<Project> projects) {
+    public void setProjects(List<ProjectDto> projects) {
         this.projects = projects;
     }
 

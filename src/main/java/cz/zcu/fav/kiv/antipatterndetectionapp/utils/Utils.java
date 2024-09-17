@@ -5,6 +5,7 @@ import cz.zcu.fav.kiv.antipatterndetectionapp.model.ResultDetail;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.servlet.http.HttpSession;
 import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
@@ -14,7 +15,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 public class Utils {
-
+    //[JT] pouzit, nebo zahodit
     private final Logger LOGGER = LoggerFactory.getLogger(Utils.class);
 
     /**
@@ -107,6 +108,7 @@ public class Utils {
      * @return is valid
      */
     public static boolean checkStringSubstrings(String substrings) {
+        //[JT] prepsat do regexu - tohle je zrudne
         if (substrings.startsWith(Constants.SUBSTRING_DELIMITER)) {
             return false;
         }
@@ -120,5 +122,11 @@ public class Utils {
         }
 
         return true;
+    }
+    //[JT] tohle taky hodit pryc - session neni validni
+    public static void sessionRecreate(HttpSession session) {
+        session.removeAttribute("activity");
+        session.removeAttribute("categoryFilter");
+        session.removeAttribute("typeFilter");
     }
 }

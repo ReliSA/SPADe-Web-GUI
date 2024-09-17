@@ -1,8 +1,12 @@
 package cz.zcu.fav.kiv.antipatterndetectionapp.exception;
 
+import cz.zcu.fav.kiv.antipatterndetectionapp.model.Project;
 import cz.zcu.fav.kiv.antipatterndetectionapp.model.Query;
 import cz.zcu.fav.kiv.antipatterndetectionapp.service.AntiPatternService;
 import cz.zcu.fav.kiv.antipatterndetectionapp.service.ProjectService;
+import cz.zcu.fav.kiv.antipatterndetectionapp.v2.model.ProjectDto;
+import cz.zcu.fav.kiv.antipatterndetectionapp.v2.utils.converters.ClassToDto;
+import cz.zcu.fav.kiv.antipatterndetectionapp.v2.utils.converters.ProjectToDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,7 +53,8 @@ public class CustomErrorController implements ErrorController {
             }
         }
 
-        model.addAttribute("query", new Query(projectService.getAllProjects(), antiPatternService.antiPatternsToModel(antiPatternService.getAllAntiPatterns())));
+        ClassToDto<Project, ProjectDto> classToDto = new ProjectToDto();
+        model.addAttribute("query", new Query(classToDto.convert(projectService.getAllProjects()), antiPatternService.antiPatternsToModel(antiPatternService.getAllAntiPatterns())));
         model.addAttribute("antiPatterns", antiPatternService.antiPatternsToModel(antiPatternService.getAllAntiPatterns()));
 
         if (exception != null) {

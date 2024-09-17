@@ -5,11 +5,9 @@ import cz.zcu.fav.kiv.antipatterndetectionapp.model.AntiPattern;
 import cz.zcu.fav.kiv.antipatterndetectionapp.model.Project;
 import cz.zcu.fav.kiv.antipatterndetectionapp.model.QueryResultItem;
 import cz.zcu.fav.kiv.antipatterndetectionapp.model.ResultDetail;
-import cz.zcu.fav.kiv.antipatterndetectionapp.model.types.Percentage;
 import cz.zcu.fav.kiv.antipatterndetectionapp.utils.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.thymeleaf.spring5.processor.SpringTextareaFieldTagProcessor;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;

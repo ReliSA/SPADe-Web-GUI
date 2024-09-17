@@ -1,0 +1,65 @@
+openapi: 3.0.0
+info:
+    title: todo title
+    description: todo desc
+    version: 2.0.0
+
+paths:
+  /v2/user/register:
+    post:
+      summary: Registers a new user to the database
+      description: desc
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+            examples:
+              '201':
+                value:
+                  {
+                    name: non-existing,
+                    email: foo@foo.foo,
+                    password: foo
+                  }
+
+      responses:
+        '201':  #status code
+          description: TODO
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+                  properties:
+                    message:
+                      type: string
+              examples:
+                '201':
+                  value:
+                    {
+                      message: User successfully created
+                    }
+
+components:
+  schemas:
+
+    User:
+      title: User
+      type: object
+      properties:
+        name:
+          type: string
+          description: User name
+        email:
+          type: string
+          description: User email
+        password:
+          type: string
+          description: User password
+      required:
+        - name
+        - email
+        - password

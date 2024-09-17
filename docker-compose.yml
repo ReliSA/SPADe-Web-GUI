@@ -16,19 +16,19 @@ services:
       - ./db/spade-config.sql:/usr/local/etc/spade-config.sql
 
   #service 2: definition of phpMyAdmin
-  phpmyadmin:
-    image: phpmyadmin/phpmyadmin:latest
-    container_name: my-php-myadmin
-    ports:
-      - "8082:80"
-    restart: always
-    depends_on:
-      - db
-    environment:
-      SPRING_DATASOURCE_USERNAME: <username for phpMyAdmin>
-      SPRING_DATASOURCE_PASSWORD: <password for phpMyAdmin>
-    volumes:
-      - ./uploads.ini:/usr/local/etc/php/conf.d/uploads.ini   # add configuration due to max upload file size
+#  phpmyadmin:
+#    image: phpmyadmin/phpmyadmin:latest
+#    container_name: my-php-myadmin
+#    ports:
+#      - "8082:80"
+#    restart: always
+#    depends_on:
+#      - db
+#    environment:
+#      SPRING_DATASOURCE_USERNAME: <username for phpMyAdmin>
+#      SPRING_DATASOURCE_PASSWORD: <password for phpMyAdmin>
+#    volumes:
+#      - ./uploads.ini:/usr/local/etc/php/conf.d/uploads.ini   # add configuration due to max upload file size
 
 
   #service 3: definition of your spring-boot app

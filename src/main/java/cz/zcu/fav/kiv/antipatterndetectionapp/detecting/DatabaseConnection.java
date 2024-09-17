@@ -18,7 +18,7 @@ import java.util.Map;
 public class DatabaseConnection {
     private final Logger LOGGER = LoggerFactory.getLogger(DatabaseConnection.class);
 
-    private Connection databaseConnection;
+    private final Connection databaseConnection;
 
     /**
      * Constructor that takes application properties from configuration file name application.properties
@@ -85,10 +85,8 @@ public class DatabaseConnection {
      * @return result set of results
      */
     public ResultSet executeQueries(Project project, List<String> queries) {
-        Statement stmt;
         ResultSet resultSet = null;
-        try {
-            stmt = this.getDatabaseConnection().createStatement();
+        try (Statement stmt = this.getDatabaseConnection().createStatement()) {
 
             for (String query : queries) {
                 if (queries.indexOf(query) != queries.size() - 1) {
@@ -114,25 +112,21 @@ public class DatabaseConnection {
      * @return object of results
      */
     public List<List<Map<String, Object>>> executeQueriesWithMultipleResults(Project project, List<String> queries) {
-        Statement stmt;
         List<List<Map<String, Object>>> allResults = new ArrayList<>();
-        ResultSet resultSet = null;
-        try {
-            stmt = this.getDatabaseConnection().createStatement();
+        ResultSet resultSet;
+        try(Statement stmt = this.getDatabaseConnection().createStatement()) {
 
             for (String query : queries) {
                 if (queries.indexOf(query) != queries.size() - 1) {
-                    if (query.contains("?"))
+                    if (query.contains("?")) {
                         query = query.replace("?", project.getId().toString());
-                    resultSet = stmt.executeQuery(query);
-                } else {
-                    resultSet = stmt.executeQuery(query);
+                    }
                 }
+                resultSet = stmt.executeQuery(query);
 
                 if (query.toLowerCase().startsWith("select")) {
                     allResults.add(Utils.resultSetToArrayList(resultSet));
                 }
-
             }
         } catch (SQLException e) {
             LOGGER.error("DB query with multiple results could not be performed!");

@@ -1,5 +1,7 @@
 package cz.zcu.fav.kiv.antipatterndetectionapp.model;
 
+import cz.zcu.fav.kiv.antipatterndetectionapp.v2.model.ProjectDto;
+
 import java.util.List;
 
 /**
@@ -9,14 +11,14 @@ import java.util.List;
  * queryResultItems: all analyzed anti-patterns with results and results details
  */
 public class QueryResult {
-    private Project project;
+    private ProjectDto project;
     private List<QueryResultItem> queryResultItems;
 
-    public Project getProject() {
+    public ProjectDto getProject() {
         return project;
     }
 
-    public void setProject(Project project) {
+    public void setProject(ProjectDto project) {
         this.project = project;
     }
 
@@ -31,7 +33,7 @@ public class QueryResult {
     public QueryResult() {
     }
 
-    public QueryResult(Project project, List<QueryResultItem> queryResultItems) {
+    public QueryResult(ProjectDto project, List<QueryResultItem> queryResultItems) {
         this.project = project;
         this.queryResultItems = queryResultItems;
     }
